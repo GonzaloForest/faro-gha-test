@@ -37,6 +37,7 @@ def main() -> int:
         browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
         kw = {"accept_downloads": True}
         sf = Path("siomaa_session.json")
+        print("Tamano archivo sesion (bytes):", sf.stat().st_size if sf.exists() else "no existe")
         if sf.exists() and sf.stat().st_size > 50:
             kw["storage_state"] = str(sf)
             print("Usando sesion guardada (SIOMAA_SESSION_JSON)")
