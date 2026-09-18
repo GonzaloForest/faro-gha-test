@@ -39,7 +39,15 @@ def main() -> int:
         page = ctx.new_page()
         page.set_default_timeout(20000)
 
-        page.goto(URL, wait_until="domcontentloaded", timeout=30000)
+        for intento in range(1, 4):
+            try:
+                page.goto(URL, wait_until="commit", timeout=60000)
+                page.wait_for_load_state("domcontentloaded", timeout=60000)
+                break
+            except Exception as e:
+                print(f"intento {intento} fallo: {str(e)[:120]}")
+                if intento == 3:
+                    return 1
         page.wait_for_timeout(3000)
         print("URL inicial:", page.url)
         shot(page, "1_inicio")
