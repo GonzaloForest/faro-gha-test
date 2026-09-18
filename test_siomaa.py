@@ -45,20 +45,25 @@ def main() -> int:
         shot(page, "1_inicio")
 
         if "/login" in page.url.lower():
-            ok_u = fill_first(page, ["input[placeholder*='suario']", "input[name='Usuario']", "input[name='Email']", "input[type='email']"], USER)
-            ok_p = fill_first(page, ["input[type='password']", "input[name='Password']"], PWD)
-            print("campos login:", ok_u, ok_p)
-            for s in ["button:has-text('Entrar')", "button:has-text('Ingresar')", "button[type='submit']", "input[type='submit']"]:
-                if page.locator(s).count() > 0:
-                    page.locator(s).first.click()
-                    break
+            u = page.locator("input[placeholder*='suario']").first
+            pw = page.locator("input[type='password']").first
+            u.click()
+            u.press_sequentially(USER, delay=30)
+            pw.click()
+            pw.press_sequentially(PWD, delay=30)
+            print("valores escritos: usuario", len(u.input_value()), "password", len(pw.input_value()))
+            shot(page, "1b_campos_llenos")
+            page.locator("button:has-text('Entrar')").first.click()
             try:
-                page.wait_for_load_state("networkidle", timeout=20000)
+                page.wait_for_url(lambda url: "/login" not in url.lower(), timeout=25000)
             except Exception:
                 pass
+            page.wait_for_timeout(2000)
             shot(page, "2_post_login")
             if "/login" in page.url.lower():
-                print("FALLO: login rechazado o bloqueado. URL:", page.url)
+                txt = page.inner_text("body")
+                print("FALLO: sigue en login. Texto de la pagina:")
+                print(txt[:800])
                 return 1
         print("LOGIN OK:", page.url)
 
