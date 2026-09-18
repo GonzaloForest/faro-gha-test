@@ -35,7 +35,14 @@ def main() -> int:
     desde = hasta - timedelta(days=6)
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, args=["--no-sandbox", "--disable-dev-shm-usage"])
-        ctx = browser.new_context(accept_downloads=True)
+        kw = {"accept_downloads": True}
+        sf = Path("siomaa_session.json")
+        if sf.exists() and sf.stat().st_size > 50:
+            kw["storage_state"] = str(sf)
+            print("Usando sesion guardada (SIOMAA_SESSION_JSON)")
+        else:
+            print("Sin sesion guardada: se intenta login con usuario/password")
+        ctx = browser.new_context(**kw)
         page = ctx.new_page()
         page.set_default_timeout(20000)
 

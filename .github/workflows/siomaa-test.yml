@@ -20,7 +20,10 @@ jobs:
         env:
           SIOMAA_USER: ${{ secrets.SIOMAA_USER }}
           SIOMAA_PASSWORD: ${{ secrets.SIOMAA_PASSWORD }}
-        run: python test_siomaa.py
+          SIOMAA_SESSION_JSON: ${{ secrets.SIOMAA_SESSION_JSON }}
+        run: |
+          printf '%s' "$SIOMAA_SESSION_JSON" > siomaa_session.json
+          python test_siomaa.py
       - name: Subir evidencia
         if: always()
         uses: actions/upload-artifact@v4
