@@ -12,6 +12,7 @@ OUT.mkdir(exist_ok=True)
 URL = "https://www.siomaa.com/V2/Vehiculo/Index/"
 USER = os.environ["SIOMAA_USER"]
 PWD = os.environ["SIOMAA_PASSWORD"]
+print(f"Largo usuario={len(USER)} largo password={len(PWD)} (0 = secret vacio o no cargado)")
 
 
 def shot(page, name):
